@@ -40,9 +40,42 @@
   background-image: linear-gradient(to bottom, #282829 22%, #282829 22%, #616163 61%, #8A8C8F 100%);
   z-index: 0;
 }
+#goodNumber,#badNumber{
+  color: white;
+  margin-top: 10px;
+}
+#imgGood,#imgBad{
+   display: inline-flex;
+  margin-top: 10px;
+}
+#goodNumber{
+  margin-right: 5px;
+}
+#imgGood {
+  float: right;
+  margin-right: 10px;
+}
+#badNumber{
+  margin-left: 5px;
+}
+#imgBad {
+  float: left;
+  margin-left: 10px;
+}
 #chat-text {
   position: absolute;
   overflow-x: hidden;
+}
+
+#chat-text:before{
+    content: " ";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+  background: linear-gradient(to top,transparent 100%,#FFFFFF 0%);
 }
 /*#chat-text {
   overflow: auto;
