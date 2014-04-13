@@ -51,7 +51,7 @@ inbox.onmessage = function(message) {
 
   // console.log(emotionRangeClassString);
 
-  var bubblesNb = data.length;
+  var bubblesNb = data.text.split(" ").length;
   //if it's the content we entered
   var cl = 'his-words';
   if ( $("#input-name")[0].value == name ) {

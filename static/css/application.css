@@ -15,7 +15,7 @@
 }
 
 #bubbles {
-  z-index: 1;
+  z-index: 0;
   position: absolute;
   height: 166.7px;
   pointer-events:none;
@@ -47,6 +47,8 @@
 #imgGood,#imgBad{
    display: inline-flex;
   margin-top: 10px;
+  position: inherit;
+  z-index:2;
 }
 #goodNumber{
   margin-right: 5px;

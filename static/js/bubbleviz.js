@@ -28,11 +28,15 @@ height = parentHeight/3 - margin.top - margin.bottom;
 
 var n = 6,
     m = 1,
+    xFactor = 1,
+    yFactor = 1,    
     padding = getPadding(width),
     radius = getRadius(width),
     color = d3.scale.ordinal().domain(['rg-1','rg-2','rg-3','rg-4','rg-5','rg-6','rg-7','rg-8','rg-9','rg-10','rg-11']).range(['black','red','#919191','#660000','#f8651d','#6240a1','#f9659b','#fbfe32','#3302fb','#30cf31','white']),
     x = d3.scale.linear().domain([0,width]).range([0,width]),
     y = d3.scale.linear().domain([0,height]).range([0,height]),
+    xFactor = d3.scale.linear().domain([0,100000]).range([5, width/2]),
+    yFactor = d3.scale.linear().domain([0,100000]).range([5, height/2]),
     nodes = [],
     colors = [],
     lastExtRadius = 1;
@@ -48,6 +52,16 @@ function pointInCircle(x, y, cx, cy, radius) {
 	return distancesquared <= radius * radius;
 }
 
+function hasMoreThanOneColor(){
+	var count = 0;
+	for (var i in color.domain()){
+		count += (colors[color.domain()[i]] > 0 ? 1 : 0);
+		if (count >=2){
+			return true;
+		}
+	}
+	return false;
+}
 function getRadiusFromCenter(cx,cy, extColor){
 	for (var i in nodes){
 		if (nodes[i].colorClass !== extColor) {
@@ -58,6 +72,18 @@ function getRadiusFromCenter(cx,cy, extColor){
 			}
 		}
 	}
+	DEBUG.log('radius ' + lastExtRadius + " for color " + extColor);
+	return lastExtRadius;
+}
+
+function getRadiusFromCenter2(cx,cy, extColor){
+	var inCounter = 0;
+	for (var i in nodes){
+		if (nodes[i].colorClass !== extColor) 
+			inCounter ++;
+	}
+	// lastExtRadius = ;
+
 	DEBUG.log('radius ' + lastExtRadius + " for color " + extColor);
 	return lastExtRadius;
 }
@@ -179,9 +205,11 @@ function bubblesViz_resize (){
 
 	$("svg").width(width).height(height);
 	x = d3.scale.linear().domain([0,width]).range([0,width]),
-	y = d3.scale.linear().domain([0,height]).range([0,height/3]);
+	y = d3.scale.linear().domain([0,height]).range([0,height/3]),
+    xFactor = d3.scale.linear().domain([0,1000]).range([20, (width-15)/2]).clamp(true),
+    yFactor = d3.scale.linear().domain([0,500]).range([10, ((height-15)/3)/2]).clamp(true),
+    rad = getRadius(width);
 
-	var rad = getRadius(width);
 	// DEBUG.log("radius will be " + rad);
 	var nodes = force.nodes();
 	for (var i in nodes){
@@ -204,19 +232,25 @@ function getLastMessage(){
   last = last.children().last();
   return last;
 }
+function outputRect(rect){
+	DEBUG.log("offsetLeft : " + rect.offsetLeft + ", offsetTop : " + rect.offsetTop + 
+		", width : " + rect.width + ", height : "+ rect.height );
+}
 function addNodes(msg, bubblesNb, pos, neg, emotionRangeClassString){
 	DEBUG.log("***********\nAdding nodes");
 	var last = getLastMessage();
 	var offset = last.position();
 	var offset2 = last.offset();
-
+	var intBubbles = parseInt(bubblesNb);
+	var totalbubblesNb = intBubbles + nodes.length;
 	var rect = {
 		offsetLeft: last.position().left, 
 		offsetTop:(last.position().top + $("#bg").height()/3),  
 		width: last.width(), 
 		height: last.height()
 	};
-	// DEBUG.log(offset);
+	// DEBUG.log("Rectangle fo speech bubble " + rect );
+	// outputRect(rect);
 	var width = $("#bubbles").width();
 	var rad = getRadius(width);
 	// DEBUG.log("radius: " + rad);
@@ -224,25 +258,32 @@ function addNodes(msg, bubblesNb, pos, neg, emotionRangeClassString){
 	var colorMax = getColorMax();
 	updateBubbleCounters();
 	// DEBUG.log("color max is " + colorMax);
-	DEBUG.log("Adding nodes - computing new radius from center");
-	var r = getRadiusFromCenter(x(width/2),y(height/2), colorMax);
+	// DEBUG.log("Adding nodes - computing new radius from center");
+	
+	// var r = getRadiusFromCenter(x(width/2),y(height/2), colorMax);
+	
 	DEBUG.log("Adding nodes - computing positions for older bubbles");
+  	DEBUG.log("Total bubbles number " + totalbubblesNb);
   
+  	var xEllipse = xFactor(totalbubblesNb),
+  	yEllipse = yFactor(totalbubblesNb);
+
+	DEBUG.log("xEllipse : " + xEllipse + ", yEllipse " + yEllipse);
 	for (var i in nodes){
 		var node = nodes[i];
-		if (node.colorClass === colorMax){
+		if (node.colorClass === colorMax && hasMoreThanOneColor()){
 			var angle;
 			if (node.angle !== null){
 				angle = node.angle;
-			}else{
+			} else {
 				var rand = Math.random();
 		   		angle = rand*Math.PI*2;
 			}
-		   node.cx = x(width/2) + Math.cos(angle)*r ;
-		   node.cy = y(height/2) + Math.sin(angle)*r ;
-		}else{
-		   node.cx = x(width/2);
-		   node.cy = y(height/2);
+		    node.cx = x(width/2) + xEllipse*Math.cos(angle);
+		    node.cy = y(height/2) + yEllipse*Math.sin(angle);
+		} else {
+		    node.cx = x(width/2);
+		    node.cy = y(height/2);
 		}
 	}
   // force.nodes(nodes);
@@ -252,11 +293,12 @@ function addNodes(msg, bubblesNb, pos, neg, emotionRangeClassString){
 		var rand = Math.random();
 		var angle = rand*Math.PI*2;
 		var xC ,yC;
-		var startCoord = randomPointInRect(rect);
-		if (colorMax === emotionRangeClassString){
-		   xC = x(width/2) + Math.cos(angle)*r ;
-		   yC = y(height/2) + Math.sin(angle)*r ;
-		}else{
+		// var startCoord = randomPointInRect(rect);
+		// DEBUG.log("Start.x " + startCoord.x + ", y " + startCoord.y);
+		if (colorMax === emotionRangeClassString  && hasMoreThanOneColor() ){
+		   xC = x(width/2) + xEllipse*Math.cos(angle) ;
+		   yC = y(height/2) + yEllipse*Math.sin(angle) ;
+		} else {
 		   xC = x(width/2);
 		   yC = y(height/2);
 		}
@@ -269,8 +311,8 @@ function addNodes(msg, bubblesNb, pos, neg, emotionRangeClassString){
 	      	weight : Math.floor(Math.random()*100),
 	  		cx: xC,
 	  		cy: yC,
-	      	x:startCoord.x,
-	      	y:startCoord.y,
+	      	// x:startCoord.x,
+	      	// y:startCoord.y,
 	      	angle: angle,
 	  	});
 	}
@@ -304,13 +346,13 @@ function randomPointInRect(rect){
 	var x,y, rand = Math.random(),
 		perc = Math.floor(rand*100),
 		onLeftSide = Math.floor(rand*2) === 1 ? true: false;
-	if (onLeftSide){
-		y = rect.offsetTop + perc*rect.height/100;
-		x = rect.offsetLeft;
-	} else {
+	// if (onLeftSide){
+	// 	y = rect.offsetTop + perc*rect.height/100;
+	// 	x = rect.offsetLeft;
+	// } else {
 		y = rect.offsetTop;
-		x = rect.offsetLeft+ perc*rect.width/100;
-	}
+		x = rect.offsetLeft + perc*rect.width/100;
+	// }
 	return {x:x,y:y};
 }
 
