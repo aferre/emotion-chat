@@ -60,9 +60,6 @@ inbox.onmessage = function(message) {
   $("#chat-text").append("<div class='bubble-span-panel'><div class='speechbubble "+cl+" "+ 
       emotionRangeClassString+"'" + "><div class='panel-body white-text'>" + 
       $('<span/>').text(data.text).html() + "</div></div></div>");
-  
-  $("#goodNumber").html("0");
-  $("#badNumber").html("0");
 
   $("#chat-text").stop().animate({
     scrollTop: $('#chat-text')[0].scrollHeight
@@ -134,6 +131,6 @@ function nameConfirm(){
 $( window ).load(function() {
   viz.resize();
   DEBUG.log('init')
-  $("#goodNumber").html("0");
-  $("#badNumber").html("0");
+  // $("#goodNumber").html("0");
+  // $("#badNumber").html("0");
 });

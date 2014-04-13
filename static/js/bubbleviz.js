@@ -87,10 +87,10 @@ function getPadding(screenWidth){
 }
 
 function getRadius(screenWidth){
-  if (screenWidth < 500) return 3;
-  if (screenWidth < 750) return 4;
-  if (screenWidth < 1000) return 5;
-  return 6;
+  if (screenWidth < 500) return 1.5;
+  if (screenWidth < 750) return 2;
+  if (screenWidth < 1000) return 2.5;
+  return 3;
 }
 
 function tick(e) {
@@ -130,7 +130,7 @@ function collide(alpha) {
                 var x = d.x - quad.point.x,
                     y = d.y - quad.point.y,
                     l = Math.sqrt(x * x + y * y),
-                    r = d.radius + quad.point.radius + (d.colorClass !== quad.point.c) * padding;
+                    r = d.radius + quad.point.radius + (d.colorClass !== quad.point.colorClass) * padding;
                 if (l < r) {
                     l = (l - r) / l * alpha;
                     d.x -= x *= l;
@@ -229,16 +229,21 @@ function addNodes(msg, bubblesNb, pos, neg, emotionRangeClassString){
 	DEBUG.log("Adding nodes - computing positions for older bubbles");
   
 	for (var i in nodes){
-	var node = nodes[i];
-	if (node.colorClass === colorMax){
-	   var rand = Math.random();
-	   var angle = rand*Math.PI*2;
-	   node.cx = x(width/2) + Math.cos(angle)*r ;
-	   node.cy = y(height/2) + Math.sin(angle)*r ;
-	}else{
-	   node.cx = x(width/2);
-	   node.cy = y(height/2);
-	}
+		var node = nodes[i];
+		if (node.colorClass === colorMax){
+			var angle;
+			if (node.angle !== null){
+				angle = node.angle;
+			}else{
+				var rand = Math.random();
+		   		angle = rand*Math.PI*2;
+			}
+		   node.cx = x(width/2) + Math.cos(angle)*r ;
+		   node.cy = y(height/2) + Math.sin(angle)*r ;
+		}else{
+		   node.cx = x(width/2);
+		   node.cy = y(height/2);
+		}
 	}
   // force.nodes(nodes);
 
@@ -278,17 +283,17 @@ function updateBubbleCounters(){
 	DEBUG.log("Updating counters");
 	var goodCount = 0, badCount = 0;
 
-	goodCount+=colors['rg-1'];
-	goodCount+=colors['rg-2'];
-	goodCount+=colors['rg-3'];
-	goodCount+=colors['rg-4'];
-	goodCount+=colors['rg-5'];
+	badCount+=colors['rg-1'];
+	badCount+=colors['rg-2'];
+	badCount+=colors['rg-3'];
+	badCount+=colors['rg-4'];
+	badCount+=colors['rg-5'];
 
-	badCount+=colors['rg-7'];
-	badCount+=colors['rg-8'];
-	badCount+=colors['rg-9'];
-	badCount+=colors['rg-10'];
-	badCount+=colors['rg-11'];
+	goodCount+=colors['rg-7'];
+	goodCount+=colors['rg-8'];
+	goodCount+=colors['rg-9'];
+	goodCount+=colors['rg-10'];
+	goodCount+=colors['rg-11'];
 
 	$("#goodNumber").html(goodCount);
 	$("#badNumber").html(badCount);
