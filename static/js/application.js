@@ -132,7 +132,8 @@ function nameConfirm(){
 }
 
 $( window ).load(function() {
-viz.resize();
-$("#goodNumber").html("0");
-$("#badNumber").html("0");
+  viz.resize();
+  DEBUG.log('init')
+  $("#goodNumber").html("0");
+  $("#badNumber").html("0");
 });
