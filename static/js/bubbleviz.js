@@ -252,7 +252,7 @@ function addNodes(msg, bubblesNb, pos, neg, emotionRangeClassString){
 		var rand = Math.random();
 		var angle = rand*Math.PI*2;
 		var xC ,yC;
-		var startCoord = randomPointInRect(rect);
+		// var startCoord = randomPointInRect(rect);
 		if (colorMax === emotionRangeClassString){
 		   xC = x(width/2) + Math.cos(angle)*r ;
 		   yC = y(height/2) + Math.sin(angle)*r ;
@@ -269,8 +269,8 @@ function addNodes(msg, bubblesNb, pos, neg, emotionRangeClassString){
 	      	weight : Math.floor(Math.random()*100),
 	  		cx: xC,
 	  		cy: yC,
-	      	x:startCoord.x,
-	      	y:startCoord.y,
+	      	// x:startCoord.x,
+	      	// y:startCoord.y,
 	      	angle: angle,
 	  	});
 	}
