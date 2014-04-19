@@ -48,7 +48,25 @@ function pointInCircle(x, y, cx, cy, radius) {
 	return distancesquared <= radius * radius;
 }
 
-function getRadiusFromCenter(cx,cy, extColor){
+function getRadiusFromCenter2(extColor,rad){
+	var totalSurface = 0;
+	var totalInnerSurface = 0;
+	for (var i in color.domain()){
+		var surface = colors[color.domain()[i]] * 4 * rad * rad * Math.PI;
+		if (color.domain()[i] !== extColor){
+			totalInnerSurface += surface;
+		} 
+		totalSurface += surface;
+	}
+	var outerRadius = Math.sqrt(totalSurface/ (4*Math.PI))
+	var innerRadius = Math.sqrt(totalInnerSurface / (4*Math.PI));
+	DEBUG.log('total innersurface is ' + totalInnerSurface + ', innerRadius is ' + innerRadius);
+	DEBUG.log('total surface is ' + totalSurface + ', outerRadius is ' + outerRadius);
+	return {inner : innerRadius,
+			outer : outerRadius};
+}
+
+function getRadiusFromCenter(cx, cy, extColor){
 	for (var i in nodes){
 		if (nodes[i].colorClass !== extColor) {
 			var x = nodes[i].x;
@@ -225,7 +243,8 @@ function addNodes(msg, bubblesNb, pos, neg, emotionRangeClassString){
 	updateBubbleCounters();
 	// DEBUG.log("color max is " + colorMax);
 	DEBUG.log("Adding nodes - computing new radius from center");
-	var r = getRadiusFromCenter(x(width/2),y(height/2), colorMax);
+	// var r = getRadiusFromCenter2(x(width/2),y(height/2), colorMax);
+	var r = getRadiusFromCenter2(colorMax,rad);
 	DEBUG.log("Adding nodes - computing positions for older bubbles");
   
 	for (var i in nodes){
@@ -238,9 +257,9 @@ function addNodes(msg, bubblesNb, pos, neg, emotionRangeClassString){
 				var rand = Math.random();
 		   		angle = rand*Math.PI*2;
 			}
-		   node.cx = x(width/2) + Math.cos(angle)*r ;
-		   node.cy = y(height/2) + Math.sin(angle)*r ;
-		}else{
+		   node.cx = x(width/2) + Math.cos(angle)*r.outer ;
+		   node.cy = y(height/2) + Math.sin(angle)*r.outer ;
+		} else{
 		   node.cx = x(width/2);
 		   node.cy = y(height/2);
 		}
@@ -248,15 +267,15 @@ function addNodes(msg, bubblesNb, pos, neg, emotionRangeClassString){
   // force.nodes(nodes);
 
   	DEBUG.log("Adding nodes - computing positions for new bubbles");
-	for (var i = 0 ; i < bubblesNb; i++){
+	for (var i = 0 ; i < bubblesNb ; i++){
 		var rand = Math.random();
 		var angle = rand*Math.PI*2;
 		var xC ,yC;
 		// var startCoord = randomPointInRect(rect);
 		if (colorMax === emotionRangeClassString){
-		   xC = x(width/2) + Math.cos(angle)*r ;
-		   yC = y(height/2) + Math.sin(angle)*r ;
-		}else{
+		   xC = x(width/2) + Math.cos(angle)*r.outer ;
+		   yC = y(height/2) + Math.sin(angle)*r.outer ;
+		} else {
 		   xC = x(width/2);
 		   yC = y(height/2);
 		}
