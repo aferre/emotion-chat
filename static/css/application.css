@@ -292,44 +292,44 @@ z-index: 0;
 
 
 /* start from most neg to more pos */
-.rg-1{ border-color: black; }
-.rg-1:before{border-color: transparent black ;}
+.rg-1{ border-color: #3300CC; }
+.rg-1:before{border-color: transparent #3300CC ;}
 .rg-1:after{border-color: transparent black;}
 
-.rg-2{ border-color: red; }
-.rg-2:before{ border-color: transparent red;}
+.rg-2{ border-color: #3366CC; }
+.rg-2:before{ border-color: transparent #3366CC;}
 .rg-2:after{ border-color: transparent black;}
 
-.rg-3{ border-color: #919191;}
-.rg-3:before{border-color: transparent #919191;}
+.rg-3{ border-color: #00BCCC;}
+.rg-3:before{border-color: transparent #00BCCC;}
 .rg-3:after{border-color: transparent black;}
 
-.rg-4{ border-color: #660000;}
-.rg-4:before{border-color: transparent #660000;}
+.rg-4{ border-color: #49B05B;}
+.rg-4:before{border-color: transparent #49B05B;}
 .rg-4:after{border-color: transparent black;}
 
-.rg-5{ border-color: #f8651d;}
-.rg-5:before{border-color: transparent #f8651d;}
+.rg-5{ border-color: #33CC66;}
+.rg-5:before{border-color: transparent #33CC66;}
 .rg-5:after{border-color: transparent black;}
 
-.rg-6{ border-color: #6240a1;}
-.rg-6:before{border-color: transparent #6240a1;}
+.rg-6{ border-color: #99CC33;}
+.rg-6:before{border-color: transparent #99CC33;}
 .rg-6:after{border-color: transparent black;}
 
-.rg-7{ border-color: #f9659b;}
-.rg-7:before{border-color: transparent #f9659b;}
+.rg-7{ border-color: #FBE54B;}
+.rg-7:before{border-color: transparent #FBE54B;}
 .rg-7:after{border-color: transparent black;}
 
-.rg-8{ border-color: #fbfe32;}
-.rg-8:before{border-color: transparent #fbfe32;}
+.rg-8{ border-color: #FFCC33;}
+.rg-8:before{border-color: transparent #FFCC33;}
 .rg-8:after{border-color: transparent black;}
 
-.rg-9{ border-color: #3302fb;}
-.rg-9:before{border-color: transparent #3302fb}
+.rg-9{ border-color: #FF9933;}
+.rg-9:before{border-color: transparent #FF9933}
 .rg-9:after{border-color: transparent black  }
 
-.rg-10{ border-color: #30cf31;}
-.rg-10:before{border-color: transparent #30cf31;}
+.rg-10{ border-color: #FF5A24;}
+.rg-10:before{border-color: transparent #FF5A24;}
 .rg-10:after{border-color: transparent black;}
 
 .rg-11{ border-color: white;}

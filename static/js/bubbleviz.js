@@ -30,9 +30,11 @@ var n = 6,
     m = 1,
     padding = getPadding(width),
     radius = getRadius(width),
-    color = d3.scale.ordinal().domain(['rg-1','rg-2','rg-3','rg-4','rg-5','rg-6','rg-7','rg-8','rg-9','rg-10','rg-11']).range(['black','red','#919191','#660000','#f8651d','#6240a1','#f9659b','#fbfe32','#3302fb','#30cf31','white']),
-    x = d3.scale.linear().domain([0,width]).range([0,width]),
-    y = d3.scale.linear().domain([0,height]).range([0,height]),
+    color = d3.scale.ordinal()
+    .domain(['rg-1','rg-2','rg-3','rg-4','rg-5','rg-6','rg-7','rg-8','rg-9','rg-10','rg-11'])
+    .range(['#3300CC','#3366CC','#00BCCC','#49B05B','#33CC66','#99CC33','#FBE54B','#FFCC33','#FF9933','#FF5A24','white']),
+    x = d3.scale.linear().domain([0,width]).range([0,width]).clamp(true),
+    y = d3.scale.linear().domain([0,height]).range([0,height]).clamp(true),
     nodes = [],
     colors = [],
     lastExtRadius = 1;
@@ -196,8 +198,8 @@ function bubblesViz_resize (){
 	width = width - margin.left - margin.right;
 
 	$("svg").width(width).height(height);
-	x = d3.scale.linear().domain([0,width]).range([0,width]),
-	y = d3.scale.linear().domain([0,height]).range([0,height/3]);
+	x = d3.scale.linear().domain([0,width]).range([0,width]).clamp(true),
+	y = d3.scale.linear().domain([0,height]).range([0,height/3]).clamp(true);
 
 	var rad = getRadius(width);
 	// DEBUG.log("radius will be " + rad);
@@ -266,12 +268,12 @@ function addNodes(msg, bubblesNb, pos, neg, emotionRangeClassString){
 	}
   // force.nodes(nodes);
 
-  	DEBUG.log("Adding nodes - computing positions for new bubbles");
+  	var startCoord = upperMiddle(rect);
+	DEBUG.log("Adding nodes - computing positions for new bubbles with start coor " + startCoord.x + " " + startCoord.y);
 	for (var i = 0 ; i < bubblesNb ; i++){
 		var rand = Math.random();
 		var angle = rand*Math.PI*2;
 		var xC ,yC;
-		// var startCoord = randomPointInRect(rect);
 		if (colorMax === emotionRangeClassString){
 		   xC = x(width/2) + Math.cos(angle)*r.outer ;
 		   yC = y(height/2) + Math.sin(angle)*r.outer ;
@@ -288,8 +290,8 @@ function addNodes(msg, bubblesNb, pos, neg, emotionRangeClassString){
 	      	weight : Math.floor(Math.random()*100),
 	  		cx: xC,
 	  		cy: yC,
-	      	// x:startCoord.x,
-	      	// y:startCoord.y,
+	      	x:startCoord.x,
+	      	y:startCoord.y,
 	      	angle: angle,
 	  	});
 	}
@@ -319,6 +321,13 @@ function updateBubbleCounters(){
 	DEBUG.log("Updating counters - done");
 
 }
+
+function upperMiddle(rect){
+	var y = rect.offsetTop,
+		x = rect.offsetLeft+ 0.5*rect.width;
+	return {x:x,y:y};
+}
+
 function randomPointInRect(rect){
 	var x,y, rand = Math.random(),
 		perc = Math.floor(rand*100),
