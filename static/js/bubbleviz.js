@@ -290,8 +290,8 @@ function addNodes(msg, bubblesNb, pos, neg, emotionRangeClassString){
 	      	weight : Math.floor(Math.random()*100),
 	  		cx: xC,
 	  		cy: yC,
-	      	x:startCoord.x,
-	      	y:startCoord.y,
+	    //  	x:startCoord.x,
+	    //  	y:startCoord.y,
 	      	angle: angle,
 	  	});
 	}
@@ -318,6 +318,28 @@ function updateBubbleCounters(){
 
 	$("#goodNumber").html(goodCount);
 	$("#badNumber").html(badCount);
+
+
+	var iBaseIndicatorWidth = 25;
+	var iBaseIndicatorHeight = 25;
+	var iMaxIndicatorWidth = 25;
+	var iMaxIndicatorHeight = 25;
+	var iLeftMult = ( 1 + ( badCount - goodCount ) /
+		( badCount + goodCount ) );
+	var iRightMult = ( 1 + ( goodCount - badCount ) /
+		( badCount + goodCount ) );
+	var imgGood = document.getElementById("imgGood").children[1];
+	// var imgBad = document.getElementById("imgBad");
+	var imgBad = document.getElementById("imgBad").firstChild;
+	var counterGood = document.getElementById("goodNumber");
+	var counterBad = document.getElementById("badNumber");
+	imgGood.style.width = ( iBaseIndicatorWidth + iMaxIndicatorWidth / 2 * iRightMult ) + "px";
+	imgGood.style.height = ( iBaseIndicatorHeight + iMaxIndicatorHeight / 2 * iRightMult ) + "px";
+	counterGood.style.fontSize = ( 50 + 50 * iRightMult ) + "%";
+	imgBad.style.width = ( iBaseIndicatorWidth + iMaxIndicatorWidth / 2 * iLeftMult ) + "px";
+	imgBad.style.height = ( iBaseIndicatorHeight + iMaxIndicatorHeight / 2 * iLeftMult ) + "px";
+	counterBad.style.fontSize = ( 50 + 50 * iLeftMult ) + "%";
+
 	DEBUG.log("Updating counters - done");
 
 }
