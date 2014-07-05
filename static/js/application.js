@@ -1,15 +1,48 @@
-//hostname which is emotion-chat-v1.herokuapp
 var inbox = new ReconnectingWebSocket("ws://"+ location.host + "/receive");
 var outbox = new ReconnectingWebSocket("ws://"+ location.host + "/submit");
 
 var viz = new bubblesViz();
-
+var inputLastLength = 0;
 
 //receiving a message
 //get data and show in chat box
 inbox.onmessage = function(message) {
   // console.log(message);
   var data = JSON.parse(message.data);
+
+  if (data.type === 'text'){
+	handleMessage(data);
+  } else if (data.type === 'awaiting'){
+	handleIncoming(data);
+  }
+
+};
+
+
+inbox.onclose = function(){
+    console.log('inbox closed');
+    this.inbox = new WebSocket(inbox.url);
+
+};
+
+outbox.onclose = function(){
+    console.log('outbox closed');
+    this.outbox = new WebSocket(outbox.url);
+};
+
+function handleIncoming(data){
+	var name = data.handle;
+	if ( $("#input-name")[0].value !== name ) {
+		var isTyping = data.text === true;
+		console.log('incoming typing ' + isTyping + ' from ' + name);
+		if (isTyping)
+			$("#chat-text").append("<div id='awaiting-img'><img src='static/images/visualfeedback.gif' alt='' /></div>");
+		else
+			$("#awaiting-img").remove();
+  	}
+}
+
+function handleMessage(data){
   var name = data.handle;
   var content = data.text;
   var textLength = parseInt(data.length);
@@ -68,20 +101,24 @@ inbox.onmessage = function(message) {
     start();
   });
 
-};
+}
+function sendTyping(typing){
+ 	console.log('typing : ' + typing);
+	var handle = $("#input-name")[0].value;
+	var text   = typing;
+	outbox.send(JSON.stringify({ handle: handle, text: text, type: "awaiting" }));
+}
 
-
-inbox.onclose = function(){
-    console.log('inbox closed');
-    this.inbox = new WebSocket(inbox.url);
-
-};
-
-outbox.onclose = function(){
-    console.log('outbox closed');
-    this.outbox = new WebSocket(outbox.url);
-};
-
+$('#input-text').on('input', function() { 
+	var val = $(this).val();
+	var currentLength = val.length;
+	if (inputLastLength === 0 && currentLength !==0){
+		sendTyping(true);
+	} else if (inputLastLength !== 0 && currentLength === 0){
+		sendTyping(false);
+	}
+	inputLastLength = currentLength;
+});
 
 //send message to server when submit button pressed.
 $("#input-form").on("submit", function(event) {
@@ -93,10 +130,11 @@ $("#input-form").on("submit", function(event) {
   event.preventDefault();
   var handle = $("#input-name")[0].value;
   var text   = $("#input-text")[0].value;
-
+  sendTyping(false);
   //we stringify it because it only support string.
-  outbox.send(JSON.stringify({ handle: handle, text: text }));
+  outbox.send(JSON.stringify({ handle: handle, text: text, type: "text" }));
   $("#input-text")[0].value = "";
+  inputLastLength = 0;
   //console.log(stringifyText);
 });
 
@@ -110,7 +148,7 @@ function textEntered(){
   var text   = $("#input-text")[0].value;
 
   //we stringify it because it only support string.
-  outbox.send(JSON.stringify({ handle: handle, text: text }));
+  outbox.send(JSON.stringify({ handle: handle, text: text, type: "text" }));
   $("#input-text")[0].value = "";
   //console.log(stringifyText);
 }

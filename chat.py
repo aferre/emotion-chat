@@ -117,8 +117,6 @@ class ChatBackend(object):
 chats = ChatBackend()
 chats.start()
 
-
-
 @app.route('/')
 def hello():
     return render_template('index.html')
@@ -135,16 +133,19 @@ def inbox(ws):
 	
         if message:
             jsonMessage = json.loads(message)
-            #NLTK version analysis
-            #message = message.replace("}", ',\"' + 'length\":\"' + str( getLengthOfMessage(message) )+ '\"' + ',\"' + 'neg\":\"' + str(getNegEmotionValue(jsonMessage["text"])) + '\"' + ',\"' + 'pos\":\"' + str(getPosEmotionValue(jsonMessage["text"])) + '\"' + '}' )
-            #SentiStrength analysis
-            sentistrength_result = RateSentiment(jsonMessage["text"])
-            message = message.replace("}", ',\"' + 'length\":\"' + str( getLengthOfMessage(message) )+ '\"' + ',\"' + 'neg\":\"' + sentistrength_result[2:] + '\"' + ',\"' + 'pos\":\"' + sentistrength_result[:1] + '\"' + '}' )
+	    #SentiStrength analysis
+	    if jsonMessage["type"] == "text":
+		    sentistrength_result = RateSentiment(jsonMessage["text"])
+		    message = message.replace("}", ',\"' + 'length\":\"' + str( getLengthOfMessage(message) )+ '\"' + ',\"' + 'neg\":\"' + sentistrength_result[2:] + '\"' + ',\"' + 'pos\":\"' + sentistrength_result[:1] + '\"' + '}' )
 
-            sys.stdout.flush()
-            app.logger.info(u'Inserting message: {}'.format(message))
-            #post the message to given channel
-            redis.publish(REDIS_CHAN, message)
+		    sys.stdout.flush()
+		    app.logger.info(u'Inserting message: {}'.format(message))
+		    #post the message to given channel
+		    redis.publish(REDIS_CHAN, message)
+	    elif jsonMessage["type"] == "awaiting":
+	    	    app.logger.info(u'User in typing: {}'.format(message))
+		    sys.stdout.flush()
+		    redis.publish(REDIS_CHAN, message)
 
 @sockets.route('/receive')
 def outbox(ws):
