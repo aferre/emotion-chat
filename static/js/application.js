@@ -139,7 +139,7 @@ $("#input-form").on("submit", function(event) {
 });
 
 function textEntered(){
- if ( $("#input-name").val() == ""){
+  if ( $("#input-name").val() == ""){
     alert("Type your name!!");
     return
   }
@@ -154,19 +154,20 @@ function textEntered(){
 }
 
 function nameConfirm(){
-
-    if(!$("#input-name").prop('readonly')) {
-        $("#input-name").prop('readonly', true);
-        $("#name-confirm-btn").html("Reset");    
-    }
-    else{
-        $("#input-name").prop('readonly', false);
-        $("#name-confirm-btn").html("Confirm");
-    }
+	if ( $("#input-name").val() == ""){
+    		alert("Type your name!!");
+    		return
+  	}
+	var loginModal = $("#login-modal");
+	loginModal.modal('hide');
     
 }
 
 $( window ).load(function() {
+  var loginModal = $("#login-modal");
+	loginModal.modal({
+ 		keyboard: false
+	});
   viz.resize();
   DEBUG.log('init')
   // $("#goodNumber").html("0");
