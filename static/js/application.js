@@ -3,6 +3,7 @@ var outbox = new ReconnectingWebSocket("ws://"+ location.host + "/submit");
 
 var viz = new bubblesViz();
 var inputLastLength = 0;
+var myName ='';
 
 //receiving a message
 //get data and show in chat box
@@ -32,7 +33,7 @@ outbox.onclose = function(){
 
 function handleIncoming(data){
 	var name = data.handle;
-	if ( $("#input-name")[0].value !== name ) {
+	if ( myName !== name ) {
 		var isTyping = data.text === true;
 		console.log('incoming typing ' + isTyping + ' from ' + name);
 		if (isTyping)
@@ -87,7 +88,7 @@ function handleMessage(data){
   var bubblesNb = data.length;
   //if it's the content we entered
   var cl = 'his-words';
-  if ( $("#input-name")[0].value == name ) {
+  if ( myName == name ) {
     cl = 'my-words';
   }
   $("#chat-text").append("<div class='bubble-span-panel'><div class='speechbubble "+cl+" "+ 
@@ -104,7 +105,7 @@ function handleMessage(data){
 }
 function sendTyping(typing){
  	console.log('typing : ' + typing);
-	var handle = $("#input-name")[0].value;
+	var handle = myName;
 	var text   = typing;
 	outbox.send(JSON.stringify({ handle: handle, text: text, type: "awaiting" }));
 }
@@ -121,36 +122,19 @@ $('#input-text').on('input', function() {
 });
 
 //send message to server when submit button pressed.
-$("#input-form").on("submit", function(event) {
-
-  if ( $("#input-name").val() == ""){
+function textEntered(){
+  if ( myName == ""){
     alert("Type your name!!");
     return
   }
-  event.preventDefault();
-  var handle = $("#input-name")[0].value;
+
+  var handle = myName;
   var text   = $("#input-text")[0].value;
   sendTyping(false);
   //we stringify it because it only support string.
   outbox.send(JSON.stringify({ handle: handle, text: text, type: "text" }));
   $("#input-text")[0].value = "";
   inputLastLength = 0;
-  //console.log(stringifyText);
-});
-
-function textEntered(){
-  if ( $("#input-name").val() == ""){
-    alert("Type your name!!");
-    return
-  }
-
-  var handle = $("#input-name")[0].value;
-  var text   = $("#input-text")[0].value;
-
-  //we stringify it because it only support string.
-  outbox.send(JSON.stringify({ handle: handle, text: text, type: "text" }));
-  $("#input-text")[0].value = "";
-  //console.log(stringifyText);
 }
 
 function nameConfirm(){
@@ -158,18 +142,26 @@ function nameConfirm(){
     		alert("Type your name!!");
     		return
   	}
+	myName = $("#input-name").val();
 	var loginModal = $("#login-modal");
 	loginModal.modal('hide');
-    
+
+	var loginModal = $("#loginmodal");
+	loginModal.style('display','none');
 }
 
 $( window ).load(function() {
-  var loginModal = $("#login-modal");
-	loginModal.modal({
- 		keyboard: false
-	});
+//	var loginModal = $("#login-modal");
+//	loginModal.modal({
+//		keyboard: false
+//	});
+//	loginModal.on('hidden.bs.modal', function (e) {
+//		var loginModal = $("#login-modal");
+//		loginModal.remove();
+//	});
   viz.resize();
-  DEBUG.log('init')
+  DEBUG.log('init');
+   $('#modaltrigger').leanModal({ top: 110, overlay: 0.45, closeButton: ".hidemodal" });
   // $("#goodNumber").html("0");
   // $("#badNumber").html("0");
 });

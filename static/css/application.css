@@ -7,14 +7,14 @@
 	overflow-x: hidden;
 	max-width: 337px;
 }
-#login-modal-dialog {
-  width: 90%; /* desired relative width */
-  left: 5%; /* (100%-width)/2 */
-  /* place center */
-  margin-left:auto;
-  margin-right:auto; 
+#loginmodal{
+	background-image: url('../images/popup_login.png');
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	overflow-y: hidden;
+	overflow-x: hidden;
+	max-width: 337px;
 }
-
 .header-box{
   padding: 10px;
   padding-right: 30px;
@@ -118,7 +118,7 @@
 }*/
 
 #input-name-form {
-  margin-top: 200px;
+  margin-top: 100px;
 }
 
 /*#input-name-form {
@@ -358,3 +358,14 @@ z-index: 0;
 .rg-11:after{border-color: transparent black;}
 
 .white-text{color: white;}
+
+#lean_overlay {
+    position: fixed;
+    z-index:100;
+    top: 0px;
+    left: 0px;
+    height:100%;
+    width:100%;
+    background: #000;
+    display: none;
+}
