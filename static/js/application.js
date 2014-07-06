@@ -110,6 +110,13 @@ function sendTyping(typing){
 	outbox.send(JSON.stringify({ handle: handle, text: text, type: "awaiting" }));
 }
 
+$('#input-text').keyup(function(event){
+	if(event.keyCode == 13){
+        	textEntered();
+		event.preventDefault();
+    	}
+});
+
 $('#input-text').on('input', function() { 
 	var val = $(this).val();
 	var currentLength = val.length;
@@ -130,12 +137,20 @@ function textEntered(){
 
   var handle = myName;
   var text   = $("#input-text")[0].value;
+if (text.length === 0 ) return;
   sendTyping(false);
   //we stringify it because it only support string.
   outbox.send(JSON.stringify({ handle: handle, text: text, type: "text" }));
   $("#input-text")[0].value = "";
   inputLastLength = 0;
 }
+
+$(document).keypress(function(e) {
+    if (e.which == "13") { 
+        textEntered();
+	e.preventDefault();
+    }       
+});
 
 function nameConfirm(){
 	if ( $("#input-name").val() == ""){
@@ -145,12 +160,15 @@ function nameConfirm(){
 	myName = $("#input-name").val();
 	var loginModal = $("#login-modal");
 	loginModal.modal('hide');
+	
+	$("#input-text").focus();
 }
 
 $( window ).load(function() {
 	var loginModal = $("#login-modal");
 	loginModal.modal({
-		keyboard: false
+		keyboard: false,
+  		backdrop: 'static'
 	});
 	loginModal.on('hidden.bs.modal', function (e) {
 		var loginModal = $("#login-modal");

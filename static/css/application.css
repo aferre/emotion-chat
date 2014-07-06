@@ -5,6 +5,8 @@
 	background-repeat: no-repeat;
 	overflow-y: hidden;
 	overflow-x: hidden;
+}
+.modal-dialog{
 	max-width: 337px;
 }
 #loginmodal{
