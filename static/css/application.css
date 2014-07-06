@@ -1,3 +1,22 @@
+/*#login-modal-dialog{*/
+.modal-content{
+	background-image: url('../images/popup_login.png');
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	overflow-y: hidden;
+	overflow-x: hidden;
+}
+.modal-dialog{
+	max-width: 337px;
+}
+#loginmodal{
+	background-image: url('../images/popup_login.png');
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	overflow-y: hidden;
+	overflow-x: hidden;
+	max-width: 337px;
+}
 .header-box{
   padding: 10px;
   padding-right: 30px;
@@ -101,6 +120,10 @@
 }*/
 
 #input-name-form {
+  margin-top: 100px;
+}
+
+/*#input-name-form {
   width: 100%;
   margin-bottom: 10px;
 }
@@ -111,7 +134,7 @@
 
 #name-confirm-btn {
   float: left;
-}
+}*/
 
 #input-form {
   margin-bottom: 20px;
@@ -337,3 +360,14 @@ z-index: 0;
 .rg-11:after{border-color: transparent black;}
 
 .white-text{color: white;}
+
+#lean_overlay {
+    position: fixed;
+    z-index:100;
+    top: 0px;
+    left: 0px;
+    height:100%;
+    width:100%;
+    background: #000;
+    display: none;
+}

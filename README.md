@@ -10,3 +10,7 @@ wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | sudo
 sudo easy_install pip
 sudo apt-get install -y redis-server mysql-server libmysqlclient-dev python-dev libevent-dev
 pip install -r requirements.txt
+
+To run:
+
+gunicorn --debug -k flask_sockets.worker chat:app
