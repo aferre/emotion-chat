@@ -37,7 +37,7 @@ function handleIncoming(data){
 		var isTyping = data.text === true;
 		console.log('incoming typing ' + isTyping + ' from ' + name);
 		if (isTyping)
-			$("#chat-text").append("<div id='awaiting-img'><img src='static/images/visualfeedback.gif' alt='' /></div>");
+			$("#chat-text").append("<div id='awaiting-img' class='bubble-span-panel'><img src='static/images/visualfeedback.gif'/></div>");
 		else
 			$("#awaiting-img").remove();
   	}
@@ -145,23 +145,20 @@ function nameConfirm(){
 	myName = $("#input-name").val();
 	var loginModal = $("#login-modal");
 	loginModal.modal('hide');
-
-	var loginModal = $("#loginmodal");
-	loginModal.style('display','none');
 }
 
 $( window ).load(function() {
-//	var loginModal = $("#login-modal");
-//	loginModal.modal({
-//		keyboard: false
-//	});
-//	loginModal.on('hidden.bs.modal', function (e) {
-//		var loginModal = $("#login-modal");
-//		loginModal.remove();
-//	});
-  viz.resize();
-  DEBUG.log('init');
-   $('#modaltrigger').leanModal({ top: 110, overlay: 0.45, closeButton: ".hidemodal" });
-  // $("#goodNumber").html("0");
-  // $("#badNumber").html("0");
+	var loginModal = $("#login-modal");
+	loginModal.modal({
+		keyboard: false
+	});
+	loginModal.on('hidden.bs.modal', function (e) {
+		var loginModal = $("#login-modal");
+		loginModal.remove();
+	});
+  	viz.resize();
+  	DEBUG.log('init');
+
+  	$("#goodNumber").html("0");
+  	$("#badNumber").html("0");
 });
